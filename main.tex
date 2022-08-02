@@ -7,13 +7,23 @@
 \usepackage{amsmath,amssymb,amsfonts,amsthm} % Math packages
 
 \usepackage{cleveref} % Inline referencing
-\usepackage[style=alphabetic]{biblatex} % For bibliography
+\usepackage[backend=biber,style=alphabetic]{biblatex} % For bibliography
 \addbibresource{bibliography.bib}
 
 \usepackage{setspace} % For double-spacing
 \doublespacing
 
-\title{Landau Notation}
+% Theorems/Definitions
+\newtheorem{theorem}{Theorem}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+% Macros
+\newcommand\RR{\mathbb R}
+\newcommand\RRE{\overline{\mathbb R}}
+\newcommand\abs[1]{\left\lvert#1\right\rvert}
+
+\title{Bachmann-Landau Notation}
 \date{}
 
 \begin{document}
@@ -22,11 +32,77 @@
 
 \section{Introduction}\label{sec:introduction}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent mattis, nibh ut venenatis maximus, nibh ex finibus libero, sed fermentum lorem ex ut erat. Proin quis risus vel velit scelerisque laoreet. Maecenas ut eros mattis turpis tincidunt scelerisque quis ut augue. Sed viverra sem eu enim viverra facilisis. Etiam laoreet felis ac dolor malesuada tincidunt. Morbi id ante mauris. Sed laoreet aliquet ante. Interdum et malesuada fames ac ante ipsum primis in faucibus. Fusce leo diam, varius posuere dignissim sit amet, volutpat eu est. Aliquam erat volutpat. Maecenas tincidunt leo elit, mollis dignissim turpis malesuada ut. Ut congue sollicitudin scelerisque. Maecenas sed lectus eu nibh accumsan auctor in dictum tellus.
+Paul Bachmann (1837-1920) and Edmund Landau (1877-1930) were German mathematicians who are both of them remembered for their numerous contributions to number theory.
+It was in Bachmann's book \textit{Die Analytische Zahlentheorie}\footnote{Translates literally to \textit{Analytic Number Theory}.} \cite{Bachmann1894} on analytic number theory, a branch of mathematics best characterised by the application of analytic methods to number theoretic problems, that big-$O$ notation was first introduced to mathematics, which he used for handling the error terms in his asymptotic estimates.
+Inspired by Bachmann's idea, Landau introduced a stronger variant of big-$O$ notation, which we now call little-$o$, in his two-volume treatise titled \textit{Handbuch der Lehre von der Verteilung der Primzahlen}\footnote{Translates to \textit{Handbook of the theory of distribution of prime numbers}.} \cite{Landau1909}.
+Today, these two notations, along with other similarly defined notions (like \(\Theta\)-, \(\omega\)-, or \(\Omega\)-notation), are used in a wide variety of areas ranging, of course, from analytic fields like analytic number theory to even computer science.
+
+I myself have often come across Bachmann-Landau notation in several contexts, but in each such instance, I have had to look up and struggle with their definitions since their meaning used to escape me whenever they appeared in equations.
+The usage of big-$O$ and little-$o$ seems to be intuitively clear to mathematicians yet communicating it properly often poses a difficulty.
+Thus this investigation is directed towards understanding big-$O$ and little-$o$ notation for what they are and especially how they are to be applied in appropriate mathematical contexts.
 
 \section{Theory}\label{sec:theory}
 
+Both big-$O$ and little-$o$ notation describe the size of a function relative to another function ``in the limit''.
+Usually, this limit point is taken to be \(\infty\) (for example in asymptotic number theory), called infinite asymptotics, or \(0\) (for example in analysis), called infinitesimal asymptotics.
+The definition given here, however, generalises this notion to any limit point \(a\in\RRE\).
+Here \(\RRE\) represents the \textit{extended real numbers}, namely \(\RRE = \RR \cup \{\pm\infty\}\).
+A good reference for the basic properties of the extended reals would be the beginning of \cite{Rudin1953}.
+
 \subsection{Big-$O$}\label{ssec:bigo}
+
+There are generally two ways to define each notation in the Bachmann-Landau family of notations: a direct limit-based approach, and a quantifier-based approach.
+
+\begin{definition}
+    Given \(a\in\RRE\) and functions \(f,g:\RR\to\RR\) such that \(g\) is nonzero in some neighbourhood of \(a\), we say that \(f(x) = O_a(g(x))\) or \(f(x) = O(g(x))\) as \(x\to a\) if one of the following equivalent conditions hold:
+    \begin{enumerate}
+        \item there exists \(\delta\in(0,\infty)\) such that
+            \[\sup_{N_{\delta}(a)} \abs{\frac{f(x)}{g(x)}} < \infty;\]
+        \item there exist \(k,\delta\in(0,\infty)\) such that \(x\in N_{\delta}(a)\) implies \(\abs{f(x)} \leq k\abs{g(x)}\).
+    \end{enumerate}
+\end{definition}
+
+Here \(N_{\delta}(d)\) denotes the neighbourhood of \(a\) of radius \(\delta\), which is \((a-\delta,a+\delta)\) for finite \(a\).
+For infinite values, we can define it differently: set \(N_{\delta}(\infty) = (\delta,\infty)\) and \(N_{\delta}(-\infty) = (-\infty,-\delta)\).
+
+The set implicit in the first supremum is
+\[S_{\delta} = \left\{\abs{\frac{f(x)}{g(x)}} : x \in (a-\delta,a+\delta)\right\}.\]
+Let \(s_{\delta} = \sup S_{\delta}\).
+If \(s_{\delta} < \infty\) for some \(\delta\), then as \(s_{\delta}\) is an upper bound of \(S_{\delta}\), we have \(\abs{f(x)} \leq s_{\delta}\abs{g(x)}\) for all \(x\) such that \(x\in N_{\delta}\); thus the first condition implies the second.
+Conversely, suppose that there exist \(k,\delta\in(0,\infty)\) such that \(x\in N_{\delta}(a)\) implies \(\abs{f(x)} \leq k\abs{g(x)}\).
+Then \(k\) is an upper bound of \(S_{\delta}\), and the least-upper-bound property of \(\RR\) then shows that \(S_{\delta}\) has a finite supremum.
+Thus the two conditions are equivalent.
+
+Note that \(g\) is required to be nonzero in order for the fraction \(f(x)/g(x)\) to make sense, but that it is sufficient that it be nonzero over some neighbourhood of \(a\) for the definition to work: we can rewrite the definition to ask for such a \(\delta\) that is less than the radius of the neighbourhood in which \(g\) is nonzero.
+
+The definition found in \cite{Landau1909} is for \(a=\infty\) only, since analytic number theory is concerned primarily with infinite limits; the cases with \(a\) finite, on the other hand, are useful in analysis, for example when truncating the higher order terms in a Taylor series.
+
+When it comes to Bachmann-Landau notations, however, much more important than the rigorous definition is the understanding.
+The right way to understand big-$O$ is that big-$O$ is to functions what \(\le\) is to numbers:
+\begin{center}
+    \(f(x) = O_a(g(x))\) means \(f(x) \le g(x)\) in the limit, up to a constant factor.
+\end{center}
+
+\textbf{Examples:}
+
+\begin{itemize}
+    \item Let us verify that \(100x^2 = O_{\infty}(x^3)\) using both conditions.
+        Firstly, for any \(\delta\in(0,\infty)\) we have
+        \[\sup_{x>\delta}\abs{\frac{100x^2}{x^3}} = \sup_{x>\delta}\frac{100}{x} = \frac{100}{\delta} < \infty.\]
+        For the second condition, we know that for \(x>1\) we have \(100x^2 \leq 100x^3\); in fact, for any \(k>0\) there exists \(\delta>0\) such that \(x>\delta\) implies \(100x^2 \leq kx^3\).
+        
+    \item If \(f\) and \(g\) are functions that are each either even or odd, then \(f = O_{\infty}(g)\) if and only if \(f = O_{-\infty}(g)\).
+        Thus \(100x^2 = O_{-\infty}(x^3)\).
+
+    \item But \(100x^2 \ne O_0(x^3)\); otherwise, there would exist \(\delta,k\in(0,\infty)\) such that \(\abs x < \delta\) implies \(x \geq k/100\), which is absurd.
+    We do have, however, that \(x^3 = O_0(100x^2)\), as for \(\abs x < 100\) we have \(x^3 \leq 100x^2\).
+
+    \item We have \(x^2 = O_{\infty}(x^{100})\) but \(x^{100} = O_0(x^2)\).
+        Basically, \(x^2\) is ``smaller'' than \(x^{100}\) around \(\infty\), while \(x^{100}\) is ``smaller'' around \(0\).
+\end{itemize}
+
+Note that the symbol \(O_a\) is not standard; the literature generally exhibits \(f(x) = O(g(x))\) as \(x\to a\), or even hides the ``as \(x\to a\)'' since the value of \(a\) is usually clear from the context.
+Nevertheless, we shall use it here for the sake of brevity.
 
 \subsection{Little-$o$}\label{ssec:littleo}
 
