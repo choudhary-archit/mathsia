@@ -22,6 +22,7 @@
 \newcommand\RR{\mathbb R}
 \newcommand\RRE{\overline{\mathbb R}}
 \newcommand\abs[1]{\left\lvert#1\right\rvert}
+\newcommand\Li{\mathrm{Li}}
 
 \title{Bachmann-Landau Notation}
 \date{}
@@ -32,7 +33,7 @@
 
 \section{Introduction}\label{sec:introduction}
 
-Paul Bachmann (1837-1920) and Edmund Landau (1877-1930) were German mathematicians who are both of them remembered for their numerous contributions to number theory.
+Paul Bachmann (1837-1920) and Edmund Landau (1877-1930) were German mathematicians who are both remembered for their numerous contributions to number theory.
 It was in Bachmann's book \textit{Die Analytische Zahlentheorie}\footnote{Translates literally to \textit{Analytic Number Theory}.} \cite{Bachmann1894} on analytic number theory, a branch of mathematics best characterised by the application of analytic methods to number theoretic problems, that big-$O$ notation was first introduced to mathematics, which he used for handling the error terms in his asymptotic estimates.
 Inspired by Bachmann's idea, Landau introduced a stronger variant of big-$O$ notation, which we now call little-$o$, in his two-volume treatise titled \textit{Handbuch der Lehre von der Verteilung der Primzahlen}\footnote{Translates to \textit{Handbook of the theory of distribution of prime numbers}.} \cite{Landau1909}.
 Today, these two notations, along with other similarly defined notions (like \(\Theta\)-, \(\omega\)-, or \(\Omega\)-notation), are used in a wide variety of areas ranging, of course, from analytic fields like analytic number theory to even computer science.
@@ -44,8 +45,8 @@ Thus this investigation is directed towards understanding big-$O$ and little-$o$
 \section{Theory}\label{sec:theory}
 
 Both big-$O$ and little-$o$ notation describe the size of a function relative to another function ``in the limit''.
-Usually, this limit point is taken to be \(\infty\) (for example in asymptotic number theory), called infinite asymptotics, or \(0\) (for example in analysis), called infinitesimal asymptotics.
-The definition given here, however, generalises this notion to any limit point \(a\in\RRE\).
+Usually, this limit point is taken to be \(\infty\) (\textit{infinite} asymptotics), or \(0\) (\textit{infinitesimal} asymptotics).
+The definition given here generalises this notion to any limit point \(a\in\RRE\), but the main use cases will remain \(a=0\) and \(a=\infty\).
 Here \(\RRE\) represents the \textit{extended real numbers}, namely \(\RRE = \RR \cup \{\pm\infty\}\).
 A good reference for the basic properties of the extended reals would be the beginning of \cite{Rudin1953}.
 
@@ -54,7 +55,7 @@ A good reference for the basic properties of the extended reals would be the beg
 There are generally two ways to define each notation in the Bachmann-Landau family of notations: a direct limit-based approach, and a quantifier-based approach.
 
 \begin{definition}
-    Given \(a\in\RRE\) and functions \(f,g:\RR\to\RR\) such that \(g\) is nonzero in some neighbourhood of \(a\), we say that \(f(x) = O_a(g(x))\) or \(f(x) = O(g(x))\) as \(x\to a\) if one of the following equivalent conditions hold:
+    Given \(a\in\RRE\) and real functions \(f,g\) that are defined on a neighbourhood of \(a\) such that \(g\) is nonzero on this neighbourhood, we say that \(f(x) = O_a(g(x))\) or \(f(x) = O(g(x))\) as \(x\to a\) if one of the following equivalent conditions hold:
     \begin{enumerate}
         \item there exists \(\delta\in(0,\infty)\) such that
             \[\sup_{N_{\delta}(a)} \abs{\frac{f(x)}{g(x)}} < \infty;\]
@@ -71,46 +72,230 @@ Let \(s_{\delta} = \sup S_{\delta}\).
 If \(s_{\delta} < \infty\) for some \(\delta\), then as \(s_{\delta}\) is an upper bound of \(S_{\delta}\), we have \(\abs{f(x)} \leq s_{\delta}\abs{g(x)}\) for all \(x\) such that \(x\in N_{\delta}\); thus the first condition implies the second.
 Conversely, suppose that there exist \(k,\delta\in(0,\infty)\) such that \(x\in N_{\delta}(a)\) implies \(\abs{f(x)} \leq k\abs{g(x)}\).
 Then \(k\) is an upper bound of \(S_{\delta}\), and the least-upper-bound property of \(\RR\) then shows that \(S_{\delta}\) has a finite supremum.
-Thus the two conditions are equivalent.
+Thus the two conditions are equivalent.\footnote{As is apparent in this argument, the first condition basically says that \(\abs{f(x)/g(x)}\) should be bounded above in some neighbourhood of \(a\).}
 
 Note that \(g\) is required to be nonzero in order for the fraction \(f(x)/g(x)\) to make sense, but that it is sufficient that it be nonzero over some neighbourhood of \(a\) for the definition to work: we can rewrite the definition to ask for such a \(\delta\) that is less than the radius of the neighbourhood in which \(g\) is nonzero.
 
-The definition found in \cite{Landau1909} is for \(a=\infty\) only, since analytic number theory is concerned primarily with infinite limits; the cases with \(a\) finite, on the other hand, are useful in analysis, for example when truncating the higher order terms in a Taylor series.
+The definition found in \cite{Landau1909} is for \(a=\infty\) only, since analytic number theory is concerned primarily with infinite limits; the case \(a = 0\), on the other hand, is useful in analysis, for example when truncating the higher order terms in a Taylor series.
+As the below examples show, \(O_a\) is rather useless for finite nonzero values of \(a\).
+But the above definition is still preferred to defining \(O_0\) and \(O_{\infty}\) separately because it highlights the ``sameness'' of both notions.
 
 When it comes to Bachmann-Landau notations, however, much more important than the rigorous definition is the understanding.
 The right way to understand big-$O$ is that big-$O$ is to functions what \(\le\) is to numbers:
 \begin{center}
-    \(f(x) = O_a(g(x))\) means \(f(x) \le g(x)\) in the limit, up to a constant factor.
+    \(f(x) = O_a(g(x))\) means \(f(x) \le g(x)\) in the limit, up to a constant factor. \\
+    (\(f\) does not dominate \(g\) \(\iff\) \(a\) is not greater than \(b\))
 \end{center}
 
 \textbf{Examples:}
 
 \begin{itemize}
     \item Let us verify that \(100x^2 = O_{\infty}(x^3)\) using both conditions.
-        Firstly, for any \(\delta\in(0,\infty)\) we have
+        Using the first condition, for any \(\delta\in(0,\infty)\) we have
         \[\sup_{x>\delta}\abs{\frac{100x^2}{x^3}} = \sup_{x>\delta}\frac{100}{x} = \frac{100}{\delta} < \infty.\]
-        For the second condition, we know that for \(x>1\) we have \(100x^2 \leq 100x^3\); in fact, for any \(k>0\) there exists \(\delta>0\) such that \(x>\delta\) implies \(100x^2 \leq kx^3\).
+        Using the second condition, we know that for \(x>1\) we have \(100x^2 \leq 100x^3\).
+        In terms of the above analogy, we can observe that \(100x^2\) is ``less than or equal to'' \(x^3\) in the limit to infinity, as \(x^2\) grows slower than \(x^3\) as \(x\to\infty\).
         
     \item If \(f\) and \(g\) are functions that are each either even or odd, then \(f = O_{\infty}(g)\) if and only if \(f = O_{-\infty}(g)\).
         Thus \(100x^2 = O_{-\infty}(x^3)\).
 
     \item But \(100x^2 \ne O_0(x^3)\); otherwise, there would exist \(\delta,k\in(0,\infty)\) such that \(\abs x < \delta\) implies \(x \geq k/100\), which is absurd.
-    We do have, however, that \(x^3 = O_0(100x^2)\), as for \(\abs x < 100\) we have \(x^3 \leq 100x^2\).
+        We do have, however, that \(x^3 = O_0(100x^2)\), as for \(\abs x < 100\) we have \(x^3 \leq 100x^2\).
+        There is a graphical way to understand the relations \(100x^2 = O_{\infty}(x^3)\) and \(x^3 = O_0(100x^2)\).
+        The graph of \(100x^2\) is below the graph of \(x^3\) after \(x=100\), meaning that \(100x^2 \leq x^3\) as \(x\to\infty\); similarly, as the graph of \(x^3\) is below the graph of \(100x^2\) for all \(x<100\), we see that \(x^3 \leq 100x^2\) as \(x\to 0\).
 
-    \item We have \(x^2 = O_{\infty}(x^{100})\) but \(x^{100} = O_0(x^2)\).
-        Basically, \(x^2\) is ``smaller'' than \(x^{100}\) around \(\infty\), while \(x^{100}\) is ``smaller'' around \(0\).
+    \item To give a more exaggerated example, we have \(x^2 = O_{\infty}(x^{100})\) but \(x^{100} = O_0(x^2)\).
+
+    \item Given a finite \(a\), if \(f\) does not have any asymptote at \(a\) and \(g\) is nonzero in some neighbourhood of \(a\), then we have \(f = O_a(g)\).
+        This is because \(\abs{f/g}\) achieves the supremum over a sufficiently small neighbourhood.
 \end{itemize}
 
-Note that the symbol \(O_a\) is not standard; the literature generally exhibits \(f(x) = O(g(x))\) as \(x\to a\), or even hides the ``as \(x\to a\)'' since the value of \(a\) is usually clear from the context.
-Nevertheless, we shall use it here for the sake of brevity.
+It is thus evident that \(O_a\) is not very interesting except when \(a=0\) or \(a=\infty\), so it makes sense that the symbol \(O_a\) is not standard; the literature generally exhibits \(f(x) = O(g(x))\) as \(x\to a\), or even hides the ``as \(x\to a\)'' since the value of \(a\) is usually clear from the context (either \(0\) or \(\infty\)).
+We will omit the \(a\) subscripts from now on, and sometimes, as in the following theorem, the variable \(x\) too.
+
+\begin{theorem}[Transitivity]
+    If \(f = O(g)\) and \(g = O(h)\), then \(f = O(h)\).\footnote{If \(a\) is not specified, neither explicitly nor from context, as in this theorem, then assume any arbitrary \(a\in\RRE\).}
+\end{theorem}
+
+\begin{proof}
+    By definition, there exist \(k,l,\delta,\epsilon\in(0,\infty)\) such that \(\abs{f(x)} \leq k\abs{g(x)}\) for all \(x\in N_{\delta}(a)\) and \(\abs{g(x)} \leq l\abs{h(x)}\) for all \(x\in N_{\epsilon}(a)\).
+    It follows that
+    \[\abs{f(x)} \leq k\abs{g(x)} \leq kl\abs{h(x)}\]
+    for all \(x\in N_{\min(\delta,\epsilon)}(a)\).
+\end{proof}
 
 \subsection{Little-$o$}\label{ssec:littleo}
 
-\subsection{Equations with Landau notation}\label{ssec:equations}
+Once we have an analogue of \(\leq\) for functions, we are motivated to consider if such a notion exists for \(<\).
+This gives rise to little-\(o\).
 
-\section{Applications of Landau notation}\label{sec:applications}
+\begin{definition}
+    Given \(a\in\RRE\) and real functions \(f,g\) defined on a neighbourhood of \(a\) such that \(g\) is nonzero on this neighbourhood, we say that \(f(x) = o_a(g(x))\) or \(f(x) = o(g(x))\) as \(x\to a\) if one of the following equivalent conditions holds:
+    \begin{enumerate}
+        \item we have \(\lim_{x\to a} f(x)/g(x) = 0\);
+        \item for all \(k>0\), there exists \(\delta\in(0,\infty)\) such that \(\abs{f(x)} \leq k\abs{g(x)}\) for all \(x\in N_{\delta}(a)\).\footnote{The \(k\) here actually belongs on the left side because it is \(g\) that is always greater no matter which multiple of \(f\) we take; it is placed on the right side just to make it appear similar to the definition of big-$O$.}
+    \end{enumerate}
+\end{definition}
 
-\subsection{Merten's Theorems}\label{ssec:merten}
+The equivalence in this case follows by the definition of a limit: if \(\lim_{x\to a} f(x)/g(x) = 0\), then for all \(k>0\) there exists a \(\delta > 0\) such that \(\abs{f(x)/g(x)} < k\) for all \(x\in N_{\delta}(a)\), and vice versa.
+Again, the definition given by Landau in \cite{Landau1909} assumes \(a=\infty\).
+
+As with big-$O$, there is a simple way to understand little-$o$:
+\begin{center}
+    \(f(x) = o_a(g(x))\) means that \(kf(x) < g(x)\) in the limit for \textit{any} \(k\). \\
+    (\(g\) dominates \(f\) \(\iff\) \(b\) is greater than \(a\))
+\end{center}
+Thus little-$o$ is stronger than big-$O$, in that \(f(x) = o_a(g(x))\) implies \(f(x) = O_a(g(x))\) but not vice versa.
+
+\textbf{Examples:}
+
+\begin{itemize}
+    \item We have \(\sin x = o_{\infty}(x)\) as \(\sin x / x\) clearly tends to \(0\) as \(x\to\infty\).
+        However, from elementary calculus we know that \(\lim_{x\to 0} \sin x/x = 1 \ne 0\), so \(\sin x \ne o_0(x)\).
+        Similarly \(x \ne o_0(\sin x)\) either, as the limit of \(x/\sin x\) is also \(1\).
+        We can see that \(\sin x = o_{\infty}(x)\) using the second condition too.
+        Pick \(k > 0\), so we must find \(\delta\) such that \(\sin x \le kx\) for all \(x>\delta\).
+        But this is easy: \(\sin x \le 1 = k \cdot 1/k \le kx\) for all \(x>1/k\), so \(\delta = 1/k\) works.
+
+    \item If \(\lim_{x\to 0} f(x) = 0\), then \(f = o_0(1)\).
+        In particular we have \(\sin x = o_0(1)\) and \(\tan x = o_0(1)\).
+
+    \item Remember from last section that \(100x^2 = O_{\infty}(x^3)\).
+        Since \(100x^2/x^3 = 100/x \to 0\) as \(x\to\infty\), we have \(100x^2 = o_{\infty}(x^3)\).
+        However, note that while \(bx^3 = O_{\infty}(x^3)\) for any real \(b\), the same does not hold with big-$O$ replaced by little-$o$.
+
+    \item We have \(f(x) = o_a(g(x))\) if and only if \(f(x+a) = o_0(g(x+a))\) for real functions \(f\) and \(g\) defined all over \(\RR\).
+
+\end{itemize}
+
+As with big-$O$, we will almost always omit the subscript and sometimes the variable when using little-$o$.
+
+\begin{theorem}[Transitivity]
+    If \(f = o(g)\) and \(g = o(h)\), then \(f = o(h)\).
+\end{theorem}
+
+\begin{proof}
+    Given \(m\in(0,\infty)\), there exist \(\delta,\epsilon\in(0,\infty)\) such that \(\abs{f(x)}\le\sqrt m \abs{g(x)}\) for all \(x\in N_{\delta}(a)\) and \(\abs{g(x)}\le\sqrt m \abs{h(x)}\) for all \(x\in N_{\epsilon}(a)\).
+    So we have
+    \[\abs{f(x)} \le \sqrt m \abs{g(x)} \le m \abs{h(x)}\]
+    for all \(x\in N_{\min(\delta,\epsilon)}\).
+\end{proof}
+
+\subsection{Bachmann-Landau equations}\label{ssec:equations}
+
+We now define a new type of equation in which big-$O$'s and little-$o$'s are allowed to appear on either side any number of times, so equations like $x^2 + O(x^3)o(1) = o(x^4)$ will make sense.
+Mathematicians usually do not distinguish between these so-called \textit{Bachmann-Landau} equations and normal equations, which creates some confusion.
+A better way is to think of the class of normal equations as a subclass of the class of Bachmann-Landau equations; the latter make a claim about the existence of some functions satisfying certain properties.
+The definition below describes a very general situtation without too much focus on formalisation, as that would distract from the topic at hand.
+
+\begin{definition}
+    Given \(a\in\RRE\), let \(X^i, Y^j\) represent any of \(O\) and \(o\) for \(i=1,2,\ldots,m\) and \(j=1,2,\ldots,n\).
+    Let \(f_i, g_j\) be real functions defined and nonzero on a neighbourhood of \(a\), for \(i=1,2,\ldots,m\) and \(j=1,2,\ldots,n\).
+    An equation of the form
+    \[F(X^1(f_1(x)), X^2(f_2(x)), \ldots, X^m(f_m(x))) = G(Y^1(g_1(x)), Y^2(g_2(x)), \ldots, Y^n(g_n(x)))\]
+    for some expressions \(F\) and \(G\) is called a \textit{Bachmann-Landau equation in} \(x\) and means the following: for any real functions \(f_1^*, \ldots, f_m^*\) defined on a neighbourhood of \(a\) such that \(f_i^*(x) = X^i(f_i(x))\), there exist real functions \(g_1^*, \ldots, g_n^*\) defined on an equal or larger neighbourhood of \(a\) such that \(g_j^*(x) = Y^j(g_j(x))\) and
+    \[F(f_1^*(x), f_2^*(x), \ldots, f_m^*(x)) = G(g_1^*(x), g_2^*(x), \ldots, g_n^*(x))\]
+    for all \(x\) for which the left side is defined.
+\end{definition}
+
+Note that Bachmann-Landau equations are \textit{not symmetric}, as the following examples show.
+They are thus to be read left-to-right.
+
+\textbf{Examples:}
+
+\begin{itemize}
+    \item Consider the Bachmann-Landau equation given above: \(x^2 + O(x^3)o(1) = o(x^4)\), as \(x\to\infty\).
+        Let us check using the above definition that this equation holds.
+        Take arbitrary real functions \(f\) and \(g\) defined everywhere such that \(\abs{f(x)} \leq k\abs{x}^3\) for all \(x\in(-\delta,\delta)\) for some finite \(\delta>0\) and \(\lim_{x\to 0} g(x) = 0\); we must verify that \(x^2 + f(x)g(x) = o(x^4)\), or in other words that \(\frac{x^2 + f(x)g(x)}{x^4}\to 0\) as \(x\to\infty\).
+        Since
+        \[\lim_{x\to 0} \frac{x^2 + f(x)g(x)}{x^4} = \lim_{x\to 0} \frac{x^2}{x^4} + \left(\lim_{x\to 0} g(x)\right)\left(\lim_{x\to 0} \frac{f(x)}{x^4}\right)\]
+        if the very last limit converges, it suffices to show that \(f(x)/x^4 \to 0\) as \(x\to\infty\).
+        But this is trivial: given \(\epsilon > 0\), we have \(\abs{f(x)/x^4} \le k/\abs{x} < \epsilon\) for all \(\abs{x} > k/\epsilon\).
+
+    \item Let us verify that \(n^{O(1)} = e^{O(n)}\) as \(n\to\infty\); note that here the variable is \(n\) instead of \(x\), as is common in number theory, and note also that since left side might not make sense for \(n<0\) all domains will be \(\RR_{>0}\).
+        Take any real function \(f\) defined on \(\RR_{>0}\) such that \(f = O(1)\); it suffices to show that \(f(n)\log n = O(n)\).
+        By definition, there exist finite \(N,k>0\) such that \(n>N\) implies \(\abs{f(n)} \le k\), and we know that \(\log n < n\) for all \(n>1\).\footnote{That \(\log n < n\) for \(n\ge 1\) follows from the \textit{racetrack principle}; see \cite{Spivey2011} for details.}
+        Thus for all \(n > \max(N,1)\) we have \(\abs{f(n)}\log n \le kn\), as desired.
+
+    \item However, \(e^{O(n)} \ne n^{O(1)}\).
+        This is to say, there exists some \(f(n) = O(n)\) for which there is no \(g(n) = O(1)\) satisfying \(e^{f(n)} = n^{g(n)}\).
+        But this is not hard: just take \(f(n) = n\).
+        Then the only possible function \(g\) would be \(g(n) = n\log_n(e) = n/\log n\), but it is easy to check that \(n/\log n \ne O(1)\).
+        Of course, here \(a=\infty\).
+
+    \item The Swedish mathematician Helge von Koch showed in \cite{Koch1901} that the Riemann hypothesis implies
+        \[\pi(x) = \Li(x) + O(\sqrt x \log x);\]
+        here \(\pi(x)\) is the number of primes from \(1\) to \(x\) and \(\Li(x) = \int_2^x dt/\log t\).
+        This equation means that \(\abs{\pi(x) - \Li(x)} \le k\sqrt x \log x\) for some real \(k>0\) and all sufficiently large \(x\), or explicitly that
+        \[\Li(x) - k\sqrt x \log x \le \pi(x) \le \Li(x) + \sqrt x\log x.\]
+\end{itemize}
+
+Fortunately, we do not have to go through such long calculations when we are dealing with Bachmann-Landau equations.
+There are some recurring ways in which Bachmann-Landau equations are manipulated that are explained in the following two theorems.
+Assume a fixed value of \(a\).
+
+\begin{theorem}
+    Let \(\lambda\in\RR\), and let \(f,g\) be real functions defined and nonzero on some neighbourhood of \(a\).
+    Then we have \(O(f)O(g) = O(fg)\), \(fO(g) = O(fg)\), \(\lambda O(f) = O(f)\), and \(O(\lambda f) = O(f)\).
+    If \(f\) and \(g\) are nonnegative, then \(O(f) + O(g) = O(\max(f, g))\) and in particular \(O(f) + O(f) = O(f)\).
+\end{theorem}
+
+Each of the equations in the statement of the above theorem is a Bachmann-Landau equation, as the proof makes clear.
+
+\begin{proof}
+    Suppose \(f_1 = O(f)\) and \(g_1 = O(g)\), so there exist \(\delta,\epsilon,k,l\in(0,\infty)\) such that \(\abs{f_1(x)} \leq k\abs{f(x)}\) for all \(x\in N_{\delta}(a)\) and \(\abs{g_1(x)} \leq l\abs{g(x)}\) for all \(x\in N_{\epsilon}(a)\).
+    We know that \(N_{\delta}(a) \cap N_{\epsilon}(a) = N_{\gamma}(a)\) for some \(\gamma\in(0,\infty)\).\footnote{We have \(\gamma = \min(\delta,\epsilon)\) if \(a\) is finite, and \(\gamma = \pm\max(\delta,\epsilon)\) if \(a=\pm\infty\).}
+    Let \(m=\max(k,l)\).
+    Then \(\abs{f_1(x)/f(x)} \leq m\) and \(\abs{g_1(x)/g(x)} \leq m\) for all \(x\in N_{\gamma}(a)\), therefore
+    \[\abs{\frac{f_1(x)g_1(x)}{f(x)g(x)}} \leq m^2\]
+    for all \(x\in N_{\gamma}(a)\); this proves the first equation.
+    The second and third equations follow from
+    \[\abs{\frac{f(x)g_1(x)}{f(x)g(x)}} = \abs{\frac{g_1(x)}{g(x)}} \leq l\quad\forall x\in N_{\epsilon}(a) \qquad \text{and} \qquad \abs{\frac{\lambda f_1(x)}{f(x)}} = \abs{\lambda}\frac{f_1(x)}{f(x)} \leq k\abs{\lambda}\quad\forall x\in N_{\delta}(a).\]
+    The fourth equation follows from the fact that
+    \[\sup_{N_{\kappa}(a)} \abs{\frac{f_2(x)}{\lambda f(x)}} < \infty \implies \sup_{N_{\kappa}(a)} \abs{\frac{f_2(x)}{f(x)}} < \infty\]
+    for any real function \(f_2\) defined on a neighbourhood of \(a\).
+    Finally, if \(f\) and \(g\) are both nonnegative, then for all \(x\in N_{\gamma}(a)\) we have
+    \begin{align*}
+        \abs{f_1(x)+g_1(x)} &\leq \abs{f_1(x)} + \abs{g_1(x)} \\
+        &\leq m(\abs{f(x)} + \abs{g(x)}) \\
+        &= m(f(x)+g(x)) \\
+        &\leq 2m\max(f(x),g(x)) = 2m\abs{\max(f(x), g(x))}.
+    \end{align*}
+\end{proof}
+
+The exact same theorem holds with big-$O$ replaced by little-$o$.
+
+\begin{theorem}
+    Let \(\lambda\in\RR\), and let \(f,g\) be real functions defined and nonzero on some neighbourhood of \(a\).
+    Then we have \(o(f)o(g) = o(fg)\), \(fo(g) = o(fg)\), \(\lambda o(f) = o(f)\), and \(o(\lambda f) = o(f)\).
+    If \(f\) and \(g\) are nonnegative, then \(o(f) + o(g) = o(\max(f, g))\) and in particular \(o(f) + o(f) = o(f)\).
+\end{theorem}
+
+\begin{proof}
+    Let \(f_1,g_1\) be real functions defined on a neighbourhood of \(a\) such that \(f_1 = o(f)\) and \(g_1 = o(g)\).
+    Then \(\lim_{x\to a} f_1(x)/f(x) = \lim_{x\to a} g_1(x)/g(x) = 0\) implies
+    \[\lim_{x\to a} \frac{f(x)g_1(x)}{f(x)g(x)} = \lim_{x\to a} \frac{g_1(x)}{g(x)} = 0\ \qquad \text{and} \qquad \lim_{x\to a} \frac{f_1(x)g_1(x)}{f(x)g(x)} = \left(\lim_{x\to a} \frac{f_1(x)}{f(x)}\right) \left(\lim_{x\to a} \frac{g_1(x)}{g(x)}\right) = 0;\]
+    thus \(o(f)o(g)=o(fg)\) and \(fo(g)=o(fg)\).
+    Also \(\lim_{x\to a} \lambda f_1(x)/f(x)\) implies \(\lambda o(f) = o(f)\), and if \(f_2 = o(\lambda f)\), then \(\lim_{x\to a} f_2(x)/(\lambda f(x)) = 0\) and therefore \(\lim_{x\to a} f_2(x)/f(x) = 0\), showing \(o(\lambda f) = o(f)\).
+    Now suppose \(f\) and \(g\) are nonnegative, implying that are \(f_1\) and \(g_1\), and take any \(m\in(0,\infty)\).
+    There exist \(\delta,\epsilon\in(0,\infty)\) such that we have \(f_1(x) \le mf(x)\) for all \(x\in N_{\delta}(a)\) and \(g_1(x) \le mg(x)\) for all \(x\in N_{\epsilon}(a)\).
+    Then \(f_1(x) + g_1(x) \le m(f(x) + g(x))\) for all \(x\in N_{\zeta}(a)\), where \(\zeta = \min(\delta,\epsilon)\).
+\end{proof}
+
+\textbf{Examples:}
+
+\begin{itemize}
+    \item abc.
+\end{itemize}
+
+\section{Applications}\label{sec:applications}
+
+To demonstrate the use Bachmann-Landau notation in everyday mathematics, two different example areas are covered.
+In the first place, some very basic estimates in analytic number theory that require big-$O$ are presented.
+These are taken from Chapter 3 of \cite{Apostol1976}.
+Secondly, to show the use of little-$o$ in the context of infinitesimal asymptotics, we define and develop the theory of differentiation using little-$o$.
+
+\subsection{Analytic Number Theory}\label{ssec:ant}
 
 \subsection{Differentiation}\label{ssec:differentiation}
 
