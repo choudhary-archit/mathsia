@@ -22,6 +22,7 @@
 \newcommand\RR{\mathbb R}
 \newcommand\RRE{\overline{\mathbb R}}
 \newcommand\abs[1]{\left\lvert#1\right\rvert}
+\newcommand\fl[1]{\left\lfloor#1\right\rfloor}
 \newcommand\Li{\mathrm{Li}}
 
 \title{Bachmann-Landau Notation}
@@ -228,6 +229,9 @@ They are thus to be read left-to-right.
         here \(\pi(x)\) is the number of primes from \(1\) to \(x\) and \(\Li(x) = \int_2^x dt/\log t\).
         This equation means that \(\abs{\pi(x) - \Li(x)} \le k\sqrt x \log x\) for some real \(k>0\) and all sufficiently large \(x\), or explicitly that
         \[\Li(x) - k\sqrt x \log x \le \pi(x) \le \Li(x) + \sqrt x\log x.\]
+
+    \item If \(F=G\) and \(G=H\) are valid Bachmann-Landau equations, then so is \(F=H\) by the definition.
+        This allows to write chains of equalities as we will do in \Cref{sec:applications}.
 \end{itemize}
 
 Fortunately, we do not have to go through such long calculations when we are dealing with Bachmann-Landau equations.
@@ -282,22 +286,222 @@ The exact same theorem holds with big-$O$ replaced by little-$o$.
     Then \(f_1(x) + g_1(x) \le m(f(x) + g(x))\) for all \(x\in N_{\zeta}(a)\), where \(\zeta = \min(\delta,\epsilon)\).
 \end{proof}
 
-\textbf{Examples:}
+\section{Application: Average Orders of Divisor Functions}\label{sec:applications}
 
-\begin{itemize}
-    \item abc.
-\end{itemize}
+To demonstrate the use of Bachmann-Landau notation in everyday mathematics, we explore some very basic estimates in analytic number theory that require big-$O$.
+These are taken from Chapter 3 of \cite{Apostol1976} and involve the partial summations of standard arithmetic functions.
+% After that, to show the use of little-$o$ in the context of infinitesimal asymptotics, we define and develop the theory of differentiation using little-$o$.
 
-\section{Applications}\label{sec:applications}
+% \subsection{Partial Sums of Arithmetic Functions}\label{ssec:ps}
 
-To demonstrate the use Bachmann-Landau notation in everyday mathematics, two different example areas are covered.
-In the first place, some very basic estimates in analytic number theory that require big-$O$ are presented.
-These are taken from Chapter 3 of \cite{Apostol1976}.
-Secondly, to show the use of little-$o$ in the context of infinitesimal asymptotics, we define and develop the theory of differentiation using little-$o$.
+We first define all the relevant notions that will be required.
 
-\subsection{Analytic Number Theory}\label{ssec:ant}
+\begin{definition}
+    \item
+    \begin{enumerate}
+        \item Given a natural number \(n\), let \(\tau(n)\) denote the number of positive divisors of \(n\), and given \(s\in\RR\) let \(\sigma_s(n)\) denote the sum of the \(s\)-th powers of these divisors.
 
-\subsection{Differentiation}\label{ssec:differentiation}
+        \item For \(s\in\RR_{>0}\), define
+            \[
+                \zeta(s) =
+                \begin{cases}
+                    \sum_{n=1}^{\infty} n^{-s} & \text{if } s > 1 \\
+                    \lim_{x\to\infty} \left(\sum_{n\le x} \frac{1}{n^s} - \frac{x^{1-s}}{1-s}\right) & \text{if } 0 < s < 1.
+                \end{cases}
+            \]
+            This is called the \textit{Riemman Zeta-Function}.
+
+        \item Define \(C = \lim_{n\to\infty} (1 + 1/2 + 1/3 + \ldots + 1/n - \log n)\).
+            This is called \textit{Euler's constant}.
+    \end{enumerate}
+\end{definition}
+
+There is a special way to write such functions that run over the divisors of a variable number.
+We write
+\[\tau(n) = \sum_{d\mid n} 1 \qquad \text{and} \qquad \sigma_s(n) = \sum_{d\mid n} d^s.\]
+In particular, this clarifies the fact that \(\sigma_0\) and \(\tau\) are the same function, called the \textit{divisor counting function}.
+Also \(\sigma_1\) is often written just as \(\sigma\) and called the \textit{divisor sum function}.
+The function \(\zeta\) is at the heart of mathematics and especially number theory.
+We touch not even the tip of the iceberg encompassing the work that has been done regarding this function.
+Note that the infinite sum \(\sum n^{-s}\) converges if and only if \(s>1\), and thus the case \(0<s<1\) has to be considered separately; we will not go into detail about how this second expression is derived.
+As for the constant \(C\), it features in the theorems below and is not to be confused with the constant \(e = \lim_{n\to\infty} (1+1/n)^n\).
+Although it is not strictly necessary, we will use the fact that \(\zeta(2) = \pi^2/6\).
+This statement is known for having numerous beautiful proofs that can easily be found on the Internet.
+
+One of the goals of number theoretic research is to understand deeply the behaviour of arithmetic functions like \(\tau\) and \(\sigma_s\), and analytic number theory focuses on their behaviour for large \(n\).
+However, functions in number theory are notorious for fluctuating; \(\tau\), for example, takes the value \(2\) for every prime \(n\), of which there are infinitely many.
+So instead of focusing on \(\tau(n)\) specifically, we can instead question the \textit{average} value of \(\tau(n)\) over a large sample of numbers, leading to the following.
+
+\begin{definition}
+    Given a function \(f:\mathbb N\to \mathbb R\), the \textit{average order} of \(f\) is the function \(\tilde{f}(x) = \frac 1 x\sum_{n\le x} f(n)\).
+\end{definition}
+
+In turns out that we can compute big-$O$ estimates for \(\tilde{\tau}\) and \(\tilde{\sigma_s}\), but before that we need some basic results.
+
+\begin{theorem}[Euler's Summation Formula]\label{theorem:esf}
+    Given a real function \(f:\RR\to\RR\) that is continuously differentiable on the interval \([x,y]\), we have
+    \[\sum_{x<n\le y} f(n) = \int_x^y f(t)\,dt + \int_x^y (t-\fl{t}) f'(t)\,dt + f(x)(x - \fl{x}) - f(y)(y - \fl{y}).\]
+\end{theorem}
+
+\begin{proof}
+    Observe that
+    \begin{align*}
+        \int_{\fl x}^{\fl y} \fl t f'(t)\,dt &= \sum_{n = \fl x + 1}^{\fl y} \int_{n-1}^n \fl t f'(t)\,dt \\
+        &= \sum_{n = \fl x + 1}^{\fl y} \int_{n-1}^n (n-1)f'(t)\,dt \\
+        &= \sum_{n = \fl x + 1}^{\fl y} (n-1)(f(n) - f(n-1)) \\
+        &= \fl y f(\fl y) - \fl x f(\fl x) - \sum_{x<n\le y} f(n),
+    \end{align*}
+    so
+    \begin{align*}
+        \sum_{x<n\le y} f(n) &= \fl y f(\fl y) - \fl x f(\fl x) - \int_{\fl x}^{\fl y} \fl t f'(t)\,dt \\
+        &= \fl y f(\fl y) - \fl x f(\fl x) - \left(\int_x^y \fl t f'(t)\,dt + \int_{\fl x}^{x} \fl t f'(t)\,dt - \int_{\fl y}^{y} \fl t f'(t)\,dt\right) \\
+        &= \fl y f(\fl y) - \fl x f(\fl x) - \left(\int_x^y \fl t f'(t)\,dt + \fl x (f(x) - f(\fl x)) - \fl y (f(y) - f(\fl y))\right) \\
+        &= \fl y f(y) - \fl x f(x) - \left(\int_x^y \fl t f'(t)\,dt\right). \\
+    \end{align*}
+    Now integration by parts gives
+    \[\int_x^y tf'(t)\,dt = \int_x^y f(t)\,dt + yf(y) - xf(x),\]
+    and adding this to the last expression finishes the proof.
+\end{proof}
+
+\begin{theorem}[Exponential Sums]\label{theorem:expsums}
+    For \(x\ge 1\) we have
+    \begin{enumerate}
+        \item \(\sum_{n\le x} 1/n = \log x + C + O(1/x)\);
+        \item \(\sum_{n\le x} 1/n^s = x^{1-s}/(1-s) + \zeta(s) + O(x^{-s})\) if \(s\in\RR_{>0}-\{1\}\);
+        \item \(\sum_{n>x} 1/n^s = O(x^{1-s})\) if \(s>1\);
+        \item \(\sum_{n\le x} n^u = x^{u+1}/(u+1) + O(x^u)\) if \(u\ge 0\).
+    \end{enumerate}
+\end{theorem}
+
+Let us first of all understand what these equations signify.
+The first of the above equations says that if we define the function \(F:\RR_{>1}\to\RR\) by \(F(x) = \sum_{n\le x} 1/n\), then the function \(F(x) - \log x - C\) grows slower than \(1/x\) as \(x\to\infty\).
+More precisely, there exists a constant \(k\) such that for all sufficently large \(x\) we have
+\[C + \log x - \frac k x \le F(x) \le C + \log x + \frac k x.\]
+The other three equations can similarly be translated into such inequalities.
+
+\begin{proof}
+\item
+    \begin{enumerate}
+        \item Taking \(f(t) = 1/t\) in \Cref{theorem:esf} gives
+            \begin{align*}
+                \sum_{n<x} \frac 1 n &= \int_1^x \frac{dt}{t} - \int_1^x \frac{t-\fl t}{t^2}\,dt + 1 - \frac{x-\fl x}{x} \\
+                &= \log x + \left(1 - \int_1^x \frac{t-\fl t}{t^2}\,dt\right) + O\left(\frac 1 x\right)
+            \end{align*}
+            Here we used the fact that \(-(x-\fl x)/x = O(1/x)\), which is true because \(x-\fl x \le 1\) for all \(x\).\footnote{So the ratio is clearly bounded above (by $1$).}
+
+            Now observe that
+            \[\int_1^x \frac{t-\fl t}{t^2}\,dt = \int_1^{\infty} \frac{t-\fl t}{t^2}\,dt - \int_x^{\infty} \frac{t-\fl t}{t^2}\,dt,\]
+            where the first improper integral converges by the comparison test with \(\int_1^{\infty} t^{-2}\,dt\).
+            Denote the second integral as a function \(G(x)\) for \(x\ge 1\).
+            We have \(0\le G(x) \le \int_x^{\infty} t^{-2}\,dt = 1/x\), so actually
+            \[\int_1^x \frac{t-\fl t}{t^2}\,dt = \int_1^{\infty} \frac{t-\fl t}{t^2}\,dt + O\left(\frac 1 x \right)\]
+            and putting this in the previous equation we get
+            \[\sum_{n<x} \frac 1 n = \log x + \left(1 - \int_1^{\infty} \frac{t-\fl t}{t^2}\,dt\right) + O\left(\frac 1 x\right).\]
+            Note that the two \(O(1/x)\) have been combined into one.
+            Moving \(\log x\) to the left side and taking the limit as \(x\to\infty\), the \(O(1/x)\) term disappears\footnote{ioeu} and we are left with
+            \[\left(1 - \int_1^{\infty} \frac{t-\fl t}{t^2}\,dt\right) = \lim_{x\to\infty} \left(\sum_{n<x} \frac 1 n - \log x\right) = C,\]
+            finishing the proof.
+
+        \item Let \(f(t) = 1/t^s\) in \Cref{theorem:esf} and observe as in part (a) that
+            \[\sum_{n\le x} \frac{1}{n^s} &= \frac{x^{1-s}}{1-s} + C(s) + O(x^{-s}),\]
+            where
+            \[C(s) = 1 - \frac{1}{1-s} - s\int_1^{\infty} \frac{t-\fl t}{t^{s+1}}\,dt.\]
+            If \(s>1\), then in the limit the left side converges to \(\zeta(s)\) while the nonconstant terms on the right vanish, leaving \(C(s) = \zeta(s)\).
+            If \(s<1\), then moving the \(x^{1-s}\) term to the left and taking the limit again gives \(C(s) = \zeta(s)\), finishing the proof.
+
+        \item We have
+            \[\sum_{n>x} \frac{1}{n^s} = \zeta(s) - \sum_{n\le x} \frac{1}{n^s} = \frac{x^{1-s}}{s-1} + O(x^{-s}) = O(x^{1-s})\]
+            from part (b).
+
+        \item Simply put \(f(t) = t^u\) in \Cref{theorem:esf} and reduce as in parts (a) and (b).
+    \end{enumerate}
+\end{proof}
+
+Using these results it is now possible to prove the two theorems below that determine the average order of \(\tau\) and \(\sigma_s\).
+Due to the lack of space, the proof will not be provided here.
+It can be found, as mentioned above, in Chapter 3 of \cite{Apostol1976}.
+
+\begin{theorem}[Dirichlet's Formula]\label{theorem:tau}
+    For \(x\ge 1\) we have
+    \[\sum_{n\le x} \tau(n) = x\log x + (2C-1)x + O(\sqrt x)\]
+\end{theorem}
+
+Although the error term \(O(\sqrt x)\) has been improved to smaller powers of \(x\), the infimum of all \(u\) for which the error term is \(O(x^u)\) is an open problem called \textit{Dirichlet's divisor problem}.
+
+\begin{theorem}[Divisor Sum Estimates]\label{theorem:sigma}
+    For \(x\ge 1\) we have
+    \[
+        \sum_{n\le x} \sigma_s(n) =
+        \begin{cases}
+            \pi^2x^2/12 + O(x\log x) & \text{if } s=1 \\
+            \pi^2x/6 + O(\log x) & \text{if } s=-1 \\
+            \zeta(s+1)x^{s+1}/(s+1) + O(x^{\max(1,s)}) & \text{if } s>0 \text{ and } s\ne 1 \\
+            \zeta(1-s)x + O(x^{\max(0,1+s)}) & \text{if } s<0 \text{ and } s\ne -1.
+        \end{cases}
+    \]
+\end{theorem}
+
+As a direct corollary, we get the average orders; simply divide by a factor of \(x\) in each of the above cited formulas.
+Note that we ignore the error term when mentioning the average order, so the average order of \(\tau\) is \(\log x\) and that of \(\sigma_1\) is \(\pi^2x/12\).
+
+\begin{theorem}
+    For \(x\ge 1\) we have \(\tilde{\tau}(x) = \log x + (2C-1) + O(x^{-1/2})\) and
+    \[
+        \tilde{\sigma_s}(x) =
+        \begin{cases}
+            \pi^2x/12 + O(\log x) & \text{if } s=1 \\
+            \pi^2/6 + O(\log x/x) & \text{if } s=-1 \\
+            \zeta(s+1)x^s/(s+1) + O(x^{\max(0,s-1)}) & \text{if } s>0 \text{ and } s\ne 1 \\
+            \zeta(1-s) + O(x^{\max(-1,s)}) & \text{if } s<0 \text{ and } s\ne -1.
+        \end{cases}
+    \]
+\end{theorem}
+
+% \subsection{Differentiation}\label{ssec:differentiation}
+% 
+% Of course, any definition of differentiability rests on a previously defined notion of limits.
+% Since we do not use any analytical concept further than the definition of a limit in all of \Cref{sec:theory}, this subsection is logically consistent.
+% 
+% \begin{definition}
+%     Consider a real function \(f\) defined on some neighbourhood of a given \(a\in\RR\).
+%     We say that \(f\) is \textit{differentiable} at \(a\) if there exists \(\lambda\in\RR\) such that \(f(a+h) - f(h) = \lambda h + o(h)\) as \(h\to 0\).
+%     In this case, we write \(f'(a) = \lambda\).
+% \end{definition}
+% 
+% The equation \(f(x+h) - f(h) = \lambda h + o(h)\) in the above definition is a Bachmann-Landau equation in \(h\).
+% Thus \(f\) is differentiable at \(a\) if \((f(a+h) - f(h) - \lambda h)/h \to 0\) as \(h\to 0\) for some real \(\lambda\), which is clearly equivalent to the standard definition.
+% 
+% The use of little-$o$ in the above definition, along with Theorem 4, allows us to give alternate proofs of the various differentiation laws.
+% 
+% \begin{theorem}[Sum Rule]
+%     Given functions \(f\) and \(g\) differentiable at \(a\), the function \(f+g\) is differentiable at \(a\) and \((f+g)'(a) = f'(a) + g'(a)\).
+% \end{theorem}
+% 
+% \begin{proof}
+%     We directly use the above definition.
+%     Observe that
+%     \begin{align*}
+%         (f+g)(a+h) - (f+g)(a) - (f'(a)+g'(a))h &= (f(a+h) - f(a)) + (g(a+h) - g(a)) - (f'(a)+g'(a))h \\
+%         &= (f'(a)h + o(h)) + (g'(a)h + o(h)) - (f'(a)+g'(a))h \\
+%         &= o(h) + o(h) = o(h).
+%     \end{align*}
+% \end{proof}
+% 
+% \begin{theorem}[Product Rule]
+%     Given functions \(f\) and \(g\) differentiable at \(a\), the function \(fg\) is differentiable at \(a\) and \((fg)'(a) = f'(a)g(a) + f(a)g'(a)\).
+% \end{theorem}
+% 
+% \begin{proof}
+%     Observe that
+%     \begin{align*}
+%         (fg)(a+h) - (fg)(a) - (f'(a)g(a) + f(a)g'(a))h &= f(a+h)g(a+h) - f(a)g(a) - (f'(a)g(a) + f(a)g'(a))h \\
+%         &= [f(a) + f'(a)h + o(h)][g(a) + g'(a)h + o(h)] - (f'(a)g(a) + f(a)g'(a))h \\
+%         &= f'(a)g'(a)h^2 + (f(a)+g(a))o(h) + (f'(a) + g'(a))ho(h) + o(h)o(h).
+%     \end{align*}
+%     In the final expression, we have \(f'(a)g'(a)h^2 = o(h)\); note that here \(h\to 0\), so \(h\) dominates \(h^2\).
+%     Similarly \(o(h)o(h) = o(h^2) = o(h)\) and \((f'(a) + g'(a))ho(h) = (f'(a)+g'(a))o(h^2) = o(h)\), and of course \((f(a)+g(a))o(h) = o(h)\).
+%     Since all the terms in the last expression are \(o(h)\), so must be their sum too.
+% \end{proof}
 
 \section{Conclusion}\label{ssec:conclusion}
 
